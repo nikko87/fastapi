@@ -1,6 +1,3 @@
-import json
-
-import httpx
 import pytest
 
 from main import get_or_default, get_telemedicine_room
