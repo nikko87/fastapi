@@ -1,0 +1,129 @@
+[
+  {
+    "id": "0551ff87-71c3-4bde-a52a-517f7821d089",
+    "attended": false,
+    "attendedAt": null,
+    "createdAt": "2024-08-02T20:18:49.000Z",
+    "measurements": {
+      "temperature": {
+        "value": 36.5,
+        "unit": "Celsius",
+        "address": "mqtt:thermometer",
+        "timestamp": "2024-08-02T20:17:23.607Z",
+        "startTimestamp": "2024-08-02T20:17:19.968Z"
+      },
+      "spo2": {
+        "value": 100,
+        "address": "mqtt:oximeter",
+        "timestamp": "2024-08-02T20:17:34.630Z",
+        "startTimestamp": "2024-08-02T20:17:25.383Z"
+      },
+      "weight": {
+        "value": 95.95,
+        "unit": "kg",
+        "address": "mqtt:scale",
+        "timestamp": "2024-08-02T20:18:33.791Z",
+        "startTimestamp": "2024-08-02T20:18:33.386Z"
+      },
+      "height": {
+        "value": 1852.3,
+        "unit": "mm",
+        "address": "mqtt:stadiometer",
+        "timestamp": "2024-08-02T20:18:38.133Z",
+        "startTimestamp": "2024-08-02T20:18:35.818Z"
+      },
+      "bodyMassIndex": {
+        "value": 28,
+        "address": "evaluated:bmi",
+        "timestamp": "2024-08-02T20:18:33.791Z",
+        "startTimestamp": "2024-08-02T20:18:33.386Z"
+      },
+      "bloodPressure": {
+        "value": {
+          "systolic": 140,
+          "diastolic": 86
+        },
+        "unit": "mmHg",
+        "address": "mqtt:sphygmomanometer",
+        "timestamp": "2024-08-02T20:18:23.991Z",
+        "startTimestamp": "2024-08-02T20:17:53.467Z"
+      },
+      "pulseRate": {
+        "value": 84,
+        "address": "mqtt:oximeter",
+        "timestamp": "2024-08-02T20:17:34.630Z",
+        "startTimestamp": "2024-08-02T20:17:25.383Z"
+      }
+    },
+    "questions": [
+      {
+        "question": "Digite seu Nome:",
+        "type": "text",
+        "options": [
+          "",
+          ""
+        ],
+        "skippable": false,
+        "answer": "NIKOLAS CASTRO"
+      },
+      {
+        "question": "Digite sua data de nascimento:",
+        "type": "text",
+        "options": [
+          "",
+          ""
+        ],
+        "skippable": false,
+        "answer": "11111987"
+      },
+      {
+        "question": "Digite seu CPF:",
+        "type": "text",
+        "options": [
+          "",
+          ""
+        ],
+        "skippable": false,
+        "answer": "05973085945"
+      },
+      {
+        "question": "Digite seu telefone:",
+        "type": "text",
+        "options": [
+          "",
+          ""
+        ],
+        "skippable": false,
+        "answer": "43999301727"
+      }
+    ],
+    "riskClassification": "unclassified",
+    "locator": "05973085945",
+    "kiosk": {
+      "id": "63959579-81c3-42df-be79-0a2baec8850c",
+      "serialNumber": "VDKIOSKA2224800074",
+      "hostname": "VDKIOSKA2224800074"
+    },
+    "attendanceType": {
+      "id": "04d1dff1-659c-4b87-9ab4-fe19a7e30a35",
+      "name": "Telemedicina"
+    },
+    "sponsor": {
+      "id": "1ce09866-c945-4f25-ba7a-f6bed5335b51",
+      "name": "Doutor Salva Emergência Medicas LTDA",
+      "tradeName": "Dr. Salva"
+    },
+    "patient": {
+      "id": "d339eb6f-6421-4c83-a734-2a8decfc6ec8",
+      "name": "Nikolas Alexandre Vieira de Castro",
+      "socialName": null,
+      "displayName": "Nikolas Alexandre Vieira de Castro",
+      "document": "05973085945",
+      "birthdate": "1987-11-11"
+    },
+    "hasMedicalEvaluation": false,
+    "origin": "kiosk",
+    "diabetes": null,
+    "medicines": null
+  }
+]
