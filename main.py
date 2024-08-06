@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
-VITAL_DOC_BASE_URL = "https://h-mj.vitaldoc.com.br/admin/v1"
+VITAL_DOC_BASE_URL = "https://h-mj.vitaldoc.com.br/admin/v1/attendance"
 SPONSOR_ID = "1ce09866-c945-4f25-ba7a-f6bed5335b51"
 TOKEN = "X-APPLICATION-TOKEN--bc73978d4d533a69c7a10b5fca98339799ebd50eae4560455d4793718baacb2c"
 
@@ -32,8 +32,7 @@ async def telemedicine(user_id: str):
 async def get_attendances():
     data = date.today().isoformat()
 
-    url = f"{
-        VITAL_DOC_BASE_URL}/attendance/history?start={data}&sponsorId={SPONSOR_ID}"
+    url = f"{VITAL_DOC_BASE_URL}/history?start={data}&sponsorId={SPONSOR_ID}"
     headers = {"Authorization": "Bearer " + TOKEN}
     async with httpx.AsyncClient() as client:
         r = await client.get(url, headers=headers)
