@@ -3,7 +3,8 @@ from datetime import date, timedelta
 import httpx
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from tenacity import retry, stop_after_attempt, stop_after_delay, wait_fixed
+from tenacity import (retry, retry_if_result, stop_after_attempt,
+                      stop_after_delay, wait_fixed)
 
 app = FastAPI()
 
@@ -23,9 +24,19 @@ URL_BASE_ROOM = (
 
 @app.get("/telemedicina/{user_id}")
 async def telemedicine(user_id: str):
-    attendances = await get_attendances()
-    attendance = find_attendance(attendances, user_id)
-    room = await get_telemedicine_room(attendance)
+
+    try:
+        attendances = await get_attendances_vitaldoc()
+    except Exception as e:
+        print(e)
+        return {"error": "Ocorreu uma falha na integração com o sistema da VitalDoc."}
+
+    try:
+        attendance = find_attendance(attendances, user_id)
+        room = await get_telemedicine_room(attendance)
+    except Exception as e:
+        print(e)
+        return {"error": "Ocorreu uma falha na integração com o sistema da Tolife."}
 
     return RedirectResponse(f'{URL_BASE_ROOM}/{room["hash"]}')
 
@@ -34,21 +45,34 @@ def create_url(data: str) -> str:
     return f"{VITAL_DOC_BASE_URL}/history?start={data}&sponsorId={SPONSOR_ID}"
 
 
-@retry(wait=wait_fixed(5), stop=stop_after_attempt(6))
-async def get_attendances():
-    data = date.today().isoformat()
-
+async def make_request_vitaldoc(client: httpx.AsyncClient, data: str):
     url = create_url(data)
     headers = {"Authorization": "Bearer " + TOKEN}
-    async with httpx.AsyncClient() as client:
-        r = await client.get(url, headers=headers)
 
-        r_json = r.json()
-        if r_json['data'] == []:
-            data = (date.today() - timedelta(days=1)).isoformat()
-            url = create_url(data)
-            r = await client.get(url, headers=headers)
-            r_json = r.json()
+    r = await client.get(url, headers=headers)
+    return r.json()
+
+
+def attendances_not_found(value):
+    return value['data'] == []
+
+
+@retry(
+    retry=retry_if_result(attendances_not_found),
+    wait=wait_fixed(5),
+    stop=stop_after_attempt(6)
+)
+async def get_attendances_vitaldoc():
+    data = date.today().isoformat()
+
+    async with httpx.AsyncClient() as client:
+        r_json = await make_request_vitaldoc(client, data)
+        print(r_json)
+
+        if attendances_not_found(r_json):
+            # tenta novamente com data de ontem
+            data = (date.today()).isoformat()
+            r_json = await make_request_vitaldoc(client, data)
 
         return r_json
 
