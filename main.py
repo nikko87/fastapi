@@ -1,12 +1,17 @@
+import logging
+import sys
 from datetime import date, timedelta
 
 import httpx
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from tenacity import (retry, retry_if_result, stop_after_attempt,
+from tenacity import (after_log, retry, retry_if_result, stop_after_attempt,
                       stop_after_delay, wait_fixed)
 
 app = FastAPI()
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 VITAL_DOC_BASE_URL = "https://h-mj.vitaldoc.com.br/admin/v1/attendance"
 SPONSOR_ID = "1ce09866-c945-4f25-ba7a-f6bed5335b51"
@@ -60,7 +65,8 @@ def attendances_not_found(value):
 @retry(
     retry=retry_if_result(attendances_not_found),
     wait=wait_fixed(5),
-    stop=stop_after_attempt(6)
+    stop=stop_after_attempt(6),
+    after=after_log(logger, logging.INFO),
 )
 async def get_attendances_vitaldoc():
     data = date.today().isoformat()
@@ -71,7 +77,7 @@ async def get_attendances_vitaldoc():
 
         if attendances_not_found(r_json):
             # tenta novamente com data de ontem
-            data = (date.today()).isoformat()
+            data = (date.today() - timedelta(days=1)).isoformat()
             r_json = await make_request_vitaldoc(client, data)
 
         return r_json
