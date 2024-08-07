@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 import httpx
 from fastapi import FastAPI
@@ -30,15 +30,27 @@ async def telemedicine(user_id: str):
     return RedirectResponse(f'{URL_BASE_ROOM}/{room["hash"]}')
 
 
+def create_url(data: str) -> str:
+    return f"{VITAL_DOC_BASE_URL}/history?start={data}&sponsorId={SPONSOR_ID}"
+
+
 @retry(wait=wait_fixed(5), stop=stop_after_attempt(6))
 async def get_attendances():
     data = date.today().isoformat()
 
-    url = f"{VITAL_DOC_BASE_URL}/history?start={data}&sponsorId={SPONSOR_ID}"
+    url = create_url(data)
     headers = {"Authorization": "Bearer " + TOKEN}
     async with httpx.AsyncClient() as client:
         r = await client.get(url, headers=headers)
-        return r.json()
+
+        r_json = r.json()
+        if r_json['data'] == []:
+            data = (date.today() - timedelta(days=1)).isoformat()
+            url = create_url(data)
+            r = await client.get(url, headers=headers)
+            r_json = r.json()
+
+        return r_json
 
 
 def find_attendance(attendances: dict, user_id: str) -> dict:
