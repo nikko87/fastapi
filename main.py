@@ -44,8 +44,8 @@ async def telemedicine(user_id: str):
         return {"error": "Ocorreu uma falha na integração com o sistema da Tolife."}
 
     url_redirect = f'{URL_BASE_ROOM}/{room["hash"]}'
-    logger.info(f'Sucesso. Usuário {
-                user_id} Redirecionado para {url_redirect}')
+    logger.info(f'Sucesso. Usuário {user_id}.'
+                f'Redirecionado para {url_redirect}')
 
     return RedirectResponse(url=url_redirect)
 
@@ -79,8 +79,10 @@ async def get_attendances_vitaldoc():
         r_json = await make_request_vitaldoc(client, data)
 
         if attendances_not_found(r_json):
-            logger.warning(f'Não foram encontrados atendimentos para o dia {
-                data} . Tentando com data de ontem.')
+            logger.warning(
+                f'Não foram encontrados atendimentos para o dia'
+                f' {data} . Tentando com data de ontem.'
+            )
             # tenta novamente com data de ontem
             data = (date.today() - timedelta(days=1)).isoformat()
             r_json = await make_request_vitaldoc(client, data)
