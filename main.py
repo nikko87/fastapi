@@ -3,6 +3,7 @@ from datetime import date
 import httpx
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from tenacity import retry, stop_after_attempt, stop_after_delay, wait_fixed
 
 app = FastAPI()
 
@@ -29,6 +30,7 @@ async def telemedicine(user_id: str):
     return RedirectResponse(f'{URL_BASE_ROOM}/{room["hash"]}')
 
 
+@retry(wait=wait_fixed(5), stop=stop_after_attempt(6))
 async def get_attendances():
     data = date.today().isoformat()
 
