@@ -39,7 +39,8 @@ def create_url(data: str) -> str:
 @app.get("/telemedicina/{user_id}")
 async def telemedicine(user_id: str):
     logger.info(f"Recebido request para o usuário {user_id}")
-    url_redirect = create_redirect_url(URL_BASE_ROOM, room["id"])
+    # url_redirect = create_redirect_url(URL_BASE_ROOM, room["id"])
+    url_redirect = create_redirect_url(URL_BASE_ROOM, 'teste')
     logger.info(f"Sucesso. Usuário {user_id}." f"Redirecionado para {url_redirect}")
 
     return RedirectResponse(url=url_redirect)
