@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, patch
 import httpx
 import pytest
 
-from main import make_request_vitaldoc
+from use_cases.get_attendance_data_vitaldoc import GetAttendanceData
 
 mock_response = {
     "patient": {
@@ -30,7 +30,9 @@ async def test_make_request_vitaldoc(monkeypatch):
 
     monkeypatch.setattr(httpx.AsyncClient, 'post', mock_post)
 
-    r = await make_request_vitaldoc(httpx.AsyncClient(), mock_response)
+    use_case = GetAttendanceData()
+    controller = ApiRequestController(use_case)
+    r = await controller.request_data(httpx.AsyncClient(), mock_response)
 
     # assert r['patient']['name'] == mock_response['patient']['name']
     assert r == mock_response

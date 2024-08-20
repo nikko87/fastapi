@@ -31,13 +31,14 @@ def get_date_today() -> str:
     return date.today().isoformat()
 
 
+def attendances_not_found(self, value):
+    return value["data"] == []
+
+
 class VitalDocApi:
 
     def __init__(self):
         pass
-
-    def attendances_not_found(self, value):
-        return value["data"] == []
 
     @retry(
         retry=retry_if_result(attendances_not_found),
@@ -74,3 +75,12 @@ class VitalDocApi:
 
         r = await client.get(url, headers=headers)
         return r.json()
+
+
+class GetAttendanceData:
+
+    async def execute(self, user_id: str) -> dict[str, any]:
+        vitaldoc = VitalDocApi()
+        attendance = await vitaldoc.get_attendances_vitaldoc()
+
+        return attendance

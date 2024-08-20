@@ -4,7 +4,6 @@ import pytest
 from adapters.iris_adapter import IrisAdapter
 from adapters.tolife_adapter import TolifeAdapter
 from controllers.integration_controller import IntegrationController
-from domain.models import PatientData
 from use_cases.get_redirect_url import GetRedirectUrl
 
 

@@ -1,6 +1,5 @@
 
 # src/controllers/integration_controller.py
-from domain.models import PatientData
 from use_cases.get_redirect_url import GetRedirectUrl
 
 
