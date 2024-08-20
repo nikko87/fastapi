@@ -39,23 +39,23 @@ def create_url(data: str) -> str:
 @app.get("/telemedicina/{user_id}")
 async def telemedicine(user_id: str):
     logger.info(f"Recebido request para o usuário {user_id}")
-    try:
-        attendances = await get_attendances_vitaldoc()
-    except Exception as e:
-        print(e)
-        return {"error": "Ocorreu uma falha na integração com o sistema da VitalDoc."}
-
-    try:
-        attendance = find_attendance(attendances, user_id)
-        room = await get_telemedicine_room(attendance)
-    except Exception as e:
-        print(e)
-        return {"error": "Ocorreu uma falha na integração com o sistema da Tolife."}
-
     url_redirect = create_redirect_url(URL_BASE_ROOM, room["id"])
     logger.info(f"Sucesso. Usuário {user_id}." f"Redirecionado para {url_redirect}")
 
     return RedirectResponse(url=url_redirect)
+    # try:
+    #     attendances = await get_attendances_vitaldoc()
+    # except Exception as e:
+    #     print(e)
+    #     return {"error": "Ocorreu uma falha na integração com o sistema da VitalDoc."}
+
+    # try:
+    #     attendance = find_attendance(attendances, user_id)
+    #     room = await get_telemedicine_room(attendance)
+    # except Exception as e:
+    #     print(e)
+    #     return {"error": "Ocorreu uma falha na integração com o sistema da Tolife."}
+
 
 
 async def make_request_vitaldoc(client: httpx.AsyncClient, data: str):
