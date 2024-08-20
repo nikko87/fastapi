@@ -5,14 +5,8 @@ from datetime import date, timedelta
 import httpx
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from tenacity import (
-    after_log,
-    retry,
-    retry_if_result,
-    stop_after_attempt,
-    stop_after_delay,
-    wait_fixed,
-)
+from tenacity import (after_log, retry, retry_if_result, stop_after_attempt,
+                      stop_after_delay, wait_fixed)
 
 app = FastAPI()
 
@@ -44,6 +38,7 @@ def create_url(data: str) -> str:
 
 @app.get("/telemedicina/{user_id}")
 async def telemedicine(user_id: str):
+    logger.info(f"Recebido request para o usuário {user_id}")
     try:
         attendances = await get_attendances_vitaldoc()
     except Exception as e:
