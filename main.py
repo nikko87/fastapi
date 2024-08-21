@@ -26,9 +26,9 @@ async def telemedicine(user_id: str):
     use_case = GetRedirectUrl(adapter)
     controller = IntegrationController(use_case)
 
-    url_redirect = controller.get_redirect_url('')
+    url_redirect = controller.get_redirect_url('teste_url')
 
-    logger.info(f"Sucesso. Usuário {
-                user_id}." f"Redirecionado para {url_redirect}")
+    logger.info(f"Sucesso. Usuário"
+                "{user_id}." f"redirecionado para {url_redirect}")
 
     return RedirectResponse(url=url_redirect)
