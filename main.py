@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
 from adapters.iris_adapter import IrisAdapter
+from adapters.jitsi_adapter import JitsiAdapter
 from controllers.integration_controller import IntegrationController
 from use_cases.get_redirect_url import GetRedirectUrl
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 async def telemedicine(user_id: str):
     logger.info(f"Recebido request para o usuário {user_id}")
 
-    adapter = IrisAdapter()
+    adapter = JitsiAdapter()
     use_case = GetRedirectUrl(adapter)
     controller = IntegrationController(use_case)
 
