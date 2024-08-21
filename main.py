@@ -2,6 +2,7 @@ import logging
 import sys
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from adapters.iris_adapter import IrisAdapter
@@ -9,6 +10,17 @@ from adapters.jitsi_adapter import JitsiAdapter
 from controllers.integration_controller import IntegrationController
 from use_cases.get_redirect_url import GetRedirectUrl
 
+app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # from tolife import TolifeApi
 
 
@@ -30,6 +42,6 @@ async def telemedicine(user_id: str):
     url_redirect = controller.get_redirect_url('teste_url')
 
     logger.info(f"Sucesso. Usuário"
-                "{user_id}." f"redirecionado para {url_redirect}")
+                f"{user_id}." f"redirecionado para {url_redirect}")
 
     return RedirectResponse(url=url_redirect)
