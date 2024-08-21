@@ -30,17 +30,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@app.middleware("http")
-async def redirect_to_https(request, call_next):
-    # Redireciona para HTTPS se a requisição não estiver segura
-    if request.url.scheme != "https":
-        url = request.url.replace(scheme="https")
-        return RedirectResponse(url)
-    return await call_next(request)
-
 # test IRIS
-
-
 @app.get("/telemedicina/{user_id}")
 async def telemedicine(user_id: str):
     logger.info(f"Recebido request para o usuário {user_id}")
