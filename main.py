@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 async def telemedicine(user_id: str):
     logger.info(f"Recebido request para o usuário {user_id}")
 
-    adapter = JitsiAdapter()
+    adapter = IrisAdapter()
     use_case = GetRedirectUrl(adapter)
     controller = IntegrationController(use_case)
 
