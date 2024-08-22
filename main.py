@@ -64,8 +64,8 @@ async def telemedicine_redirect(user_id: str):
 
     url_redirect = controller.get_redirect_url({"teste": "teste_url"})
 
-    logger.info(f"Sucesso. Usuário" f"{
-                user_id}." f"redirecionado para {url_redirect}")
+    logger.info(f"Sucesso. Usuário"
+                f"{user_id}." f"redirecionado para {url_redirect}")
 
     return RedirectResponse(url=url_redirect)
 
