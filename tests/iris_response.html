@@ -1,0 +1,1110 @@
+﻿<!DOCTYPE html>
+<html id="html" style="background-image: url('/demos/images/blur-hospital.jpg'); background-size: 100%; background-position: center; background-repeat: no-repeat; display: block; ">
+<head><base href="https://videocalldoutorsalva.irisemergencia.com/">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <!--skip-->
+    <title>IRIS - Video Chamada</title>
+    <!--hide-->
+    <link href="css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../easyrtc/easyrtc.css" />
+    <link rel="stylesheet" type="text/css" href="/demos/css/landing.css" />
+    <!--show-->
+</head>
+
+<body onload="connect();">
+    <div id="container">
+        <div id="header" class="header navbar navbar-default navbar-fixed-top" style="height:70px;">
+            <img id="logo_sys4web" src="/demos/logos/logo_sys4web.png" alt="SYS4WEB Video Call" style="max-width: 200px; max-height: 60px">
+            <div id="buttons" style="display:none;">
+                <button onclick="copiarURL()" class="btn btn-sm btn-primary">Copiar Link</button>
+                <input type="text" placeholder="numero telefone" class="form-control" id="numeroSMS" maxlength="11" />
+                <button onclick="enviarSMS()" class="btn btn-sm btn-primary">Enviar Whatsapp</button>
+                <button onclick="javascript: location.reload();" class="reload_btn"></button>
+            </div>
+        </div>
+        <div id="main" style="background-color: #d9e0e7; text-align: center; display: none;">
+            <!-- Main Content -->
+            <!--show-->
+            <div id="videos" ng-transclude style="position:relative;height:100%;width:50%;">
+                <div id="divVideo0">
+                    <video autoplay="autoplay" playsinline="playsinline" class="videoObject" id="selfVideo" muted="muted" controls></video>
+                    <div class="dropdown">
+                        <button onclick="javascript:btnMenu(0);" class="dropbtn">...</button>
+                        <div id="myDropdown0" class="dropdown-content">
+                            <!--<a href="#mute" onclick="javascript: mute(this, '#selfVideo');">silenciar</a>-->
+                            <a href="#fullscreen" onclick="javascript: fullscreen('selfVideo')">tela cheia</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="divVideo1" style="display:none" class="divVideo">
+                    <video playsinline="playsinline" id="callerVideo1" class="videoObject" controls></video>
+                    <div class="dropdown">
+                        <button onclick="javascript:btnMenu(1);" class="dropbtn">...</button>
+                        <div id="myDropdown1" class="dropdown-content">
+                            <!--<a href="#mute" onclick="javascript: mute(this, '#callervideo1');">silenciar</a>-->
+                            <a href="#fullscreen" onclick="javascript: fullscreen('callerVideo1')">tela cheia</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="divVideo2" style="display:none" class="divVideo">
+                    <video playsinline="playsinline" id="callerVideo2" class="videoObject" controls></video>
+                    <div class="dropdown">
+                        <button onclick="javascript:btnMenu(2);" class="dropbtn">...</button>
+                        <div id="myDropdown2" class="dropdown-content">
+                            <!--<a href="#mute" onclick="javascript: mute(this, '#callerVideo2');">silenciar</a>-->
+                            <a href="#fullscreen" onclick="javascript: fullscreen('callerVideo2')">tela cheia</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="divVideo3" style="display:none" class="divVideo">
+                    <video playsinline="playsinline" id="callerVideo3" class="videoObject" controls></video>
+                    <div class="dropdown">
+                        <button onclick="javascript:btnMenu(3);" class="dropbtn">...</button>
+                        <div id="myDropdown3" class="dropdown-content">
+                            <!--<a href="#mute" onclick="javascript: mute(this, '#callerVideo3');">silenciar</a>-->
+                            <a href="#fullscreen" onclick="javascript: fullscreen('callerVideo3')">tela cheia</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="divVideo4" style="display:none" class="divVideo">
+                    <video playsinline="playsinline" id="callerVideo4" class="videoObject" controls></video>
+                    <div class="dropdown">
+                        <button onclick="javascript:btnMenu(4);" class="dropbtn">...</button>
+                        <div id="myDropdown4" class="dropdown-content">
+                            <!--<a href="#mute" onclick="javascript: mute(this, '#callerVideo4');">silenciar</a>-->
+                            <a href="#fullscreen" onclick="javascript: fullscreen('callerVideo4')">tela cheia</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--hide-->
+            <!-- End Main Content -->
+        </div>
+    </div>
+
+    <div id="fila" class="fila" style="display:none;">
+        <div class="fila_container">
+            <div class="cabecalho">
+            </div>
+            <br /><br />
+            <h2><b>Você está na fila de espera</b></h2>
+            <h2><b>e logo será atendido</b></h2>
+            <br />
+            <div class="fila_posicao">
+                <label>Sua posição na fila é: </label><label id="filaPosicao"></label>
+                <div id="divFila">
+                    <label>O tempo estimado de espera é: </label> <label id="filaTempo"></label> <label> minuto(s)</label>
+                </div>
+            </div>
+            <br /><br />
+            <!--<div class="meter">
+                <span style="width: 50%; margin: 0 auto"></span>
+            </div>-->
+            <!--<div id="forma_superior" style="display:none;">
+                <img src="/demos/images/forma_superior.png" style="width: 100%; margin-top: -10%;" />
+            </div>-->
+
+            <div class="info_atendimento" style="display:none;">
+                <div><span><label><b>Status:</b> </label><label id="status"></label></span></div>
+                <div class="panel">
+                    <div class="panel-heading">Meus Dados</div>
+                    <div class="panel-body">
+                        <div><span><label><b>Solicitante:</b> </label><label id="paciente"></label></span><br /></div>
+                        <div><span><label><b>Telefone Solicitante:</b> </label><label id="telefoneSolicitante"></label></span><br /></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">Dados do atendimento</div>
+                    <div class="panel-body">
+                        <div><span><label><b>Nº Atendimento:</b> </label><label id="natendimento"></label></span><br /></div>
+                        <div><span><label><b>Horário do Chamado:</b> </label><label id="horarioChamado"></label></span><br /></div>
+                    </div>
+                </div>
+
+                <!--<div><span><label>Relatório: </label><label id="relatorio"></label></span><br /></div>
+                <div><span><label>Observações: </label><label id="observacoes"></label></span></div>-->
+                <br />
+            </div>
+            <br />
+            <button onclick="javascript: cancelar()" class="btn btn-sm btn-primary btn_cancelar">Cancelar Atendimento</button>
+        </div>
+    </div>
+
+    <!--<div id="divRodape" style="display:none;">
+        <div style="transform: rotate(-1deg); width: 100%; position: fixed; bottom: -10px; right: 0px; left: 30%;">
+            <div id="rodape" style="background-color: #ea9e93;">
+
+            </div>
+            <div style="transform: scale(1.2); width: 100%; position: fixed; bottom: 0px; right: 0px; left: 15%;">
+                <div id="rodape" style="background-color: #002a7d;">
+
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <!--show-->
+</body>
+</html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../easyrtc/easyrtc.js"></script>
+<script type="text/javascript" src="/demos/js/prettify/jquery.js"></script>
+<script>
+    var selfEasyrtcid = "";
+    var novoUsuario;
+    var qtdPessoas = 0;
+    var atendimento = null;
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+    $(document).ready(function () {
+        ajustaTela();
+    });
+
+    function connect() {
+        window.addEventListener("resize", ajustaTela)
+        var urlParams = new URLSearchParams(window.location.search);
+        var idChamada = urlParams.get('idChamada');
+
+        if (isMobile.any()) {
+            $("#fila").removeClass("fila");
+            $("#fila").addClass("fila_mobile");
+            $("body").attr("style", "zoom:2.5; margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 8px;");
+            $("#forma_superior").removeAttr("style");
+            $("#divRodape").removeAttr("style");
+            $(".cabecalho").removeAttr("style")
+        }
+        else {
+            $(".cabecalho").attr("style", "height: calc(0.07 * 100vw);")
+            $(".reload_btn").hide();
+        }
+
+        if (idChamada == undefined) {
+            $.ajax({
+                global: false,
+                url: "/ConsultaFila/" + urlParams.get('idAtendimento'),
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    if (data.masterId != undefined)
+                        $("#fila").addClass("id_" + data.masterId);
+                    const img = new Image();
+                    img.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            $("#logo_sys4web").attr("src", "/demos/logos/" + data.logo);
+                        }
+                    });
+                    img.src = "/demos/logos/" + data.logo;
+                    const imgFundo = new Image();
+                    imgFundo.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            $('html').css({ background: 'url(/demos/fundos/' + data.logo + ') repeat fixed center 100% ' });
+                            $(".videoObject").attr("poster", "/demos/fundos/" + data.logo);
+                        }
+                    });
+                    imgFundo.src = "/demos/fundos/" + data.logo;
+                    //easyrtc.setVideoDims(640, 480);
+                    if (data.status == "5") {
+                        $("#main").removeAttr("style");
+                        $("#buttons").removeAttr("style");
+                        $("#main").attr("style", "background-color: #d9e0e7; text-align: center; ");
+                        $("#divRodape").attr("style", "display:none;");
+                        $("body").attr("style", "zoom:1");
+                        $("#header").show();
+                        $("#fila").hide();
+                        document.getElementById("main").style = "";
+                        easyrtc.joinRoom(data.id, "",
+                            function () {
+                                /* we'll geta room entry event for the room we were actually added to */
+                            },
+                            function (errorCode, errorText, roomName) {
+                                easyrtc.showError(errorCode, errorText + ": room name was(" + roomName + ")");
+                            });
+
+                        novoUsuario = true;
+                        easyrtc.setRoomOccupantListener(roomListener);
+                        easyrtc.easyApp("easyrtc.audioVideoSimple", "selfVideo", ["callerVideo1", "callerVideo2", "callerVideo3", "callerVideo4"], loginSuccess, loginFailure);
+
+                        setTimeout(function () { stillAlive(idChamada) }, 5000);
+                    }
+                    else if (data.status == "1") {
+                        //tratativa da fila
+                        $("#main").attr("style", "display:none;");
+                        $("#buttons").attr("style", "display:none;");
+                        $("#fila").show();
+                        $("#filaPosicao").text(data.fila);
+                        $("#header").hide();
+                        if (data.tempo == "0")
+                            $("#divFila").attr("style", "display:none;")
+                        $("#filaTempo").text(data.tempo);
+                        if (isMobile.any()) {
+                            $("body").attr("style", "zoom:2.5;margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 8px;");
+                            $("#forma_superior").removeAttr("style");
+                        } else {
+                            $("body").attr("style", "zoom:1");
+                            $("#fila").removeClass("fila_mobile");
+                            $("#fila").addClass("fila");
+
+                            //$("#forma_superior").attr("style", "display:none;");
+                            //$("#divRodape").attr("style", "display:none;");
+                        }
+                        setTimeout(function () { connect() }, 5000);
+                    }
+                    else {
+                        const imgFundo = new Image();
+                        imgFundo.addEventListener("load", function () {
+                            if (this.naturalWidth > 0) {
+                                document.body.innerHTML = '<html><body ><div style="text-align:center;"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                                $('html').css({ background: 'url(/demos/fundos/' + data.logo + ') repeat fixed center 100%' });
+                            } else {
+                                document.body.innerHTML = '<html><body ><div style="text-align:center;"><img id="alerta" src="/demos/images/alerta.png" width="450" height="400" alt="SYS4WEB Video Call"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            }
+                        });
+                        imgFundo.src = "/demos/fundos/" + data.logo;
+                    }
+                },
+                error: function (data) {
+                    const imgFundo = new Image();
+                    imgFundo.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            $('html').css({ background: 'url(/demos/fundos/' + data.responseJSON.logo + ') repeat fixed center 100%' });
+                        } else {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><img id="alerta" src="/demos/images/alerta.png" width="450" height="400" alt="SYS4WEB Video Call"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            if (data.responseJSON.status == 400) {
+                                alert(data.responseJSON.message);
+                            }
+                        }
+                    });
+                    imgFundo.src = "/demos/fundos/" + data.responseJSON.logo;
+                }
+            });
+            if (atendimento == null)
+                $.ajax({
+                    global: false,
+                    url: "/ConsultaDadosAtendimento/" + urlParams.get('idAtendimento'),
+                    dataType: "json",
+                    type: "GET",
+                    success: function (data) {
+                        $(".info_atendimento").show()
+                        atendimento = JSON.parse(data.response);
+                        $("#natendimento").text(atendimento.NrAtendimento);
+                        $("#status").text(atendimento.Status);
+                        $("#paciente").text(atendimento.Paciente);
+                        $("#telefoneSolicitante").text(atendimento.TelefoneSolicitante);
+                        $("#horarioChamado").text(atendimento.HorarioChamado);
+                        $("#relatorio").text(atendimento.Relatorio);
+                        $("#observacoes").text(atendimento.Observacoes);
+                    },
+                    error: function (data) {
+
+                    }
+                });
+        }
+        else {
+            $.ajax({
+                global: false,
+                url: "/Autenticacao/" + urlParams.get('idChamada'),
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    const img = new Image();
+                    img.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            $("#logo_sys4web").attr("src", "/demos/logos/" + data.logo);
+                        }
+                    });
+                    img.src = "/demos/logos/" + data.logo;
+                    const imgFundo = new Image();
+                    imgFundo.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            $('html').css({ background: 'url(/demos/fundos/' + data.logo + ') repeat fixed center 100%' });
+                            $(".videoObject").attr("poster", "/demos/fundos/" + data.logo);
+                        }
+                    });
+                    imgFundo.src = "/demos/fundos/" + data.logo;
+                    //easyrtc.setVideoDims(640, 480);
+                    $("#main").removeAttr("style");
+                    $("#buttons").removeAttr("style");
+                    $("#main").attr("style", "background-color: #d9e0e7; text-align: center; ");
+                    $("#divRodape").attr("style", "display:none;");
+                    $("body").attr("style", "zoom:1");
+                    $("#header").show();
+                    easyrtc.joinRoom(data.id, "",
+                        function () {
+                            /* we'll geta room entry event for the room we were actually added to */
+                        },
+                        function (errorCode, errorText, roomName) {
+                            easyrtc.showError(errorCode, errorText + ": room name was(" + roomName + ")");
+                        });
+
+                    novoUsuario = true;
+                    easyrtc.setRoomOccupantListener(roomListener);
+                    easyrtc.easyApp("easyrtc.audioVideoSimple", "selfVideo", ["callerVideo1", "callerVideo2", "callerVideo3", "callerVideo4"], loginSuccess, loginFailure);
+
+                    setTimeout(function () { stillAlive(idChamada) }, 60000);
+                },
+                error: function (data) {
+                    const imgFundo = new Image();
+                    imgFundo.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            $('html').css({ background: 'url(/demos/fundos/' + data.responseJSON.logo + ') repeat fixed center 100%' });
+                        } else {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><img id="alerta" src="/demos/images/alerta.png" width="450" height="400" alt="SYS4WEB Video Call"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                        }
+                    });
+                    imgFundo.src = "/demos/fundos/" + data.responseJSON.logo;
+                    if (data.responseJSON.status == 400) {
+                        alert(data.responseJSON.message);
+                    }
+                }
+            });
+        }
+    }
+
+    function roomListener(roomName, otherPeers) {
+        qtdPessoas = 0;
+        for (var i in otherPeers) {
+            qtdPessoas++;
+            if (novoUsuario) {
+                sleep(1000);
+                performCall(i);
+            }
+        }
+        ajustaDivs()
+        novoUsuario = false;
+    }
+
+    function performCall(otherPeer) {
+        var successCB = function (easyrtcid, mediaType) { console.log("Ligação completada para " + easyrtcid + " do tipo: " + mediaType); };
+        var failureCB = function (errorCode, errorText) { console.log(errorText, "<-!-> callFail |"); };
+        easyrtc.setIceUsedInCalls({
+            iceServers: [{
+                urls: ["turn:150.230.76.67:3478"],
+                username: "sys4web-oci",
+                credential: "7!#@S4zD637kyT@G6K"
+            }, {
+                urls: ["stun:150.230.76.67:3478"],
+                username: "sys4web-oci",
+                credential: "7!#@S4zD637kyT@G6K"
+            }]
+        });
+        easyrtc.call(otherPeer, successCB, failureCB);
+    }
+
+    function loginSuccess(easyrtcid) {
+        selfEasyrtcid = easyrtcid;
+    }
+
+    function loginFailure(errorCode, message) {
+        easyrtc.showError(errorCode, message);
+    }
+
+    function copiarURL() {
+        var url = window.location.href.toString();
+
+        navigator.clipboard.writeText(url);
+    }
+
+    function enviarSMS() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var MasterId = urlParams.get('MasterId');
+        var nrDestino = encodeURIComponent('55' + $("#numeroSMS").val());
+        var msg = encodeURIComponent(window.location.href.toString());
+        var nrOrigem = "";
+
+
+        let target = 'https://api.whatsapp.com/send?phone=' + nrDestino + '&text=' + msg;
+
+        window.open(target, '_blank');
+
+        /*$.ajax({
+            global: false,
+            url: "/TelefoneOrigem/" + MasterId,
+            dataType: "json",
+            type: "GET",
+            success: function (data) {
+                debugger;
+                nrOrigem = JSON.parse(data);
+
+                if (nrOrigem == "") {
+                    alert("Numero de telefone origem não parametrizado, não foi possivel enviar o SMS.");
+                    return;
+                }
+
+                $.ajax({
+                    global: false,
+                    url: "/SendSMS/" + nrDestino + "&" + msg + "&" + nrOrigem,
+                    dataType: "json",
+                    type: "GET",
+                    success: function (data) {
+                        alert("Link enviado com sucesso!");
+                    },
+                    error: function () {
+                        alert("Ocorreu um problema ao enviar!");
+                        // do nothing
+                    }
+                });
+            },
+            error: function () {
+                // do nothing
+            }
+        });*/
+    }
+
+    function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) {
+                break;
+            }
+        }
+    }
+
+    function ajustaDivs() {
+
+        var width = (window.innerWidth); //* window.devicePixelRatio
+        var height = (window.innerHeight); //* window.devicePixelRatio
+
+        var x = 0, y = 0;
+
+        if (qtdPessoas == 0)
+            qtdPessoas = 1;
+
+        // sempre somar +1 na variavel pessoas
+        if (height > (width - 150)) {
+            if (qtdPessoas == 2) {// 3 pessoas
+                y = height / 1;
+                x = width * 1.45;
+            } else {
+                y = height / 1.12; // 2 pessoas
+                x = width * 1.9;
+            }
+
+            if (qtdPessoas == 3) {// 4 pessoas
+                y = height / 0.70;
+                x = width * 1.9;
+            }
+        } else {
+            if (qtdPessoas == 2) {// 3 pessoas
+                x = width / 0.95;
+            }
+            else {
+                x = width / 1.02; // 2 pessoas
+            }
+            y = height * 1.25
+
+            if (qtdPessoas == 3) { // 4 pessoas
+                x = width / 0.75;
+                y = height * 1.7;
+            }
+        }
+
+        $(".divVideo").attr("style", "display:none;");
+
+        if (qtdPessoas >= 0) {
+            for (var i = 0; i <= qtdPessoas; i++) {
+                var float = qtdPessoas % 2 != 0 ? "right" : "left";
+                var fator = qtdPessoas + 1;
+                if (i == 0) {
+                    $("#divVideo" + i).attr("style", "position:relative;float:left;height:" + ((y / fator) - 4).toString() + "px;width:" + ((x / fator) - 4).toString() + "px;");
+                    $("#selfVideo").attr("style", "position:relative;float:left;height:" + ((y / fator) - 4).toString() + "px;width:" + ((x / fator) - 4).toString() + "px;");
+                    if (qtdPessoas > 1)
+                        $("#selfVideo").addClass("easyrtcMirror");
+                } else {
+                    $("#callerVideo" + i).removeAttr("style");
+                    $("#divVideo" + i).removeAttr("style");
+                    $("#divVideo" + i).attr("style", "position:relative;float:" + float + ";height:" + ((y / fator) - 4).toString() + "px;width:" + ((x / fator) - 4).toString() + "px;margin:2px;");
+                    $("#callerVideo" + i).attr("style", "position:relative;float:" + float + ";height:" + ((y / fator) - 4).toString() + "px;width:" + ((x / fator) - 4).toString() + "px;");
+                }
+            }
+        }
+    }
+
+    function ajustaTela() {
+        setTimeout(function () {
+            var width = (window.innerWidth); //* window.devicePixelRatio
+            var height = (window.innerHeight); //* window.devicePixelRatio
+
+            if (height > (width - 150)) {
+                $("#videos").removeAttr();
+                $("#videos").attr("style", "position:relative;float:left;height:" + height / 1.12 + "px;width:" + width * 0.9 + "px;max-height:" + height / 1.12 + "px;max-width:" + width * 0.9 + "px;");
+                $("#videos").css("flex-direction", "column");
+            } else {
+                $("#videos").removeAttr();
+                $("#videos").attr("style", "position:relative;float:left;height:" + height * 0.85 + "px;width:" + width / 1.02 + "px;max-height:" + height * 0.85 + "px;max-width:" + width / 1.02 + "px;");
+                $("#videos").css("flex-direction", "row");
+            }
+        }, 500);
+
+        ajustaDivs();
+    }
+
+    function btnMenu(index) {
+        $("#myDropdown" + index).addClass("show");
+    }
+
+    function mute(el, idVideo) {
+        if ($(idVideo).html() == "") {
+            $(idVideo).html("muted")
+            $(idVideo).attr("muted", "muted")
+            el.innerHTML = "desmutar";
+        }
+        else if ($(idVideo).html() == "muted") {
+            $(idVideo).html("")
+            $(idVideo).removeAttr("muted")
+            el.innerHTML = "mutar";
+        }
+
+    }
+
+    function fullscreen(idVideo) {
+        var elem = document.getElementById(idVideo);
+        if (elem != undefined && elem != null) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+    }
+
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = $(".dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+    function stillAlive(idChamada) {
+        var urlParams = new URLSearchParams(window.location.search);
+        var idChamada = urlParams.get('idChamada');
+
+        if (idChamada == undefined) {
+            $.ajax({
+                global: false,
+                url: "/ConsultaFila/" + urlParams.get('idAtendimento'),
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    if (data.status != "5" && data.status != "1") {
+                        const imgFundo = new Image();
+                        imgFundo.addEventListener("load", function () {
+                            if (this.naturalWidth > 0) {
+                                document.body.innerHTML = '<html><body ><div style="text-align:center;"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                                $('html').css({ background: 'url(/demos/fundos/' + data.logo + ') repeat fixed center 100%' });
+                            } else {
+                                document.body.innerHTML = '<html><body ><div style="text-align:center;"><img id="alerta" src="/demos/images/alerta.png" width="450" height="400" alt="SYS4WEB Video Call"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            }
+                        });
+                        imgFundo.src = "/demos/fundos/" + data.logo;
+                    }
+                },
+                error: function (data) {
+                    const imgFundo = new Image();
+                    imgFundo.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            $('html').css({ background: 'url(/demos/fundos/' + data.responseJSON.logo + ') repeat fixed center 100%' });
+                        } else {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><img id="alerta" src="/demos/images/alerta.png" width="450" height="400" alt="SYS4WEB Video Call"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            if (data.responseJSON.status == 400) {
+                                alert(data.responseJSON.message);
+                            }
+                        }
+                    });
+                    imgFundo.src = "/demos/fundos/" + data.responseJSON.logo;
+                }
+            });
+        }
+        else {
+            $.ajax({
+                global: false,
+                url: "/Autenticacao/" + idChamada,
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                },
+                error: function (data) {
+                    const imgFundo = new Image();
+                    imgFundo.addEventListener("load", function () {
+                        if (this.naturalWidth > 0) {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                            $('html').css({ background: 'url(/demos/fundos/' + data.responseJSON.logo + ') repeat fixed center 100%' });
+                        } else {
+                            document.body.innerHTML = '<html><body ><div style="text-align:center;"><img id="alerta" src="/demos/images/alerta.png" width="450" height="400" alt="SYS4WEB Video Call"><h1>SALA INDISPONÍVEL OU FINALIZADA</h1></div></body></html>';
+                        }
+                    });
+                    imgFundo.src = "/demos/fundos/" + data.responseJSON.logo;
+                    if (data.responseJSON.status == 400) {
+                        alert("Sala encerrada");
+                    }
+
+                }
+            });
+        }
+        setTimeout(function () { stillAlive(idChamada) }, 5000);
+
+    }
+
+    function cancelar() {
+        var urlParams = new URLSearchParams(window.location.search);
+        $.ajax({
+            url: "/CancelarVideoChamada/" + urlParams.get('idAtendimento'),
+            dataType: "json",
+            type: "GET",
+            success: function (data) {
+                alert("Cancelamento realizado com sucesso.");
+                window.close();
+            },
+            error: function (data) {
+                if (data.responseJSON.status == 400) {
+                    alert("Sala encerrada");
+                }
+            }
+        });
+    }
+
+    var isMobile = {
+        Android: function () {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function () {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function () {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function () {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function () {
+            return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+        },
+        any: function () {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+</script>
+
+
+<style>
+
+    #demoContainer {
+        position: relative;
+    }
+
+    #connectControls {
+        float: left;
+        width: 250px;
+        text-align: center;
+        border: 2px solid black;
+    }
+
+    #otherClients {
+        height: 200px;
+        overflow-y: scroll;
+    }
+
+    #selfVideo {
+        height: 225px;
+        width: 300px;
+        float: left;
+        border: 1px solid gray;
+        margin-left: 10px;
+    }
+
+    #callerVideo {
+        height: 225px;
+        width: 300px;
+        border: 1px solid gray;
+        margin-left: 10px;
+    }
+
+    .dropbtn {
+        background-color: transparent;
+        color: white;
+        padding: 5px;
+        font-size: 20px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+    .dropdown {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+    .dropdown a:hover {
+        background-color: #ddd
+    }
+
+    .show {
+        display: block;
+    }
+
+    .videoObject {
+        background-color: black;
+        border-radius: 10px;
+        flex: 1;
+    }
+
+    video {
+        object-fit: cover;
+    }
+
+    #videos {
+        margin-left: 0.5%;
+        margin-right: 0.5%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /*position:absolute;
+        top: 50%;
+        left: 50%;
+        transform:translate(-50%, -50%);*/
+    }
+
+    .fila {
+        margin: auto;
+        width: 30%;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        border-radius: 15px;
+    }
+
+    .fila_mobile {
+        margin: auto;
+        width: 100%;
+        /*padding-top: 20px;*/
+        padding-bottom: 20px;
+    }
+
+    .fila_container {
+        position: relative;
+        min-height: 500px;
+        text-align: center;
+        background-color: white;
+    }
+
+    .meter {
+        box-sizing: content-box;
+        height: 15px; /* Can be anything */
+        position: relative;
+        margin: 30px 0 20px 0; /* Just for demo spacing */
+        /*background: #555;*/
+        border-radius: 25px;
+        padding: 5px;
+        box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+        width: 90%;
+        padding-left: 5%;
+    }
+
+        .meter > span {
+            display: block;
+            height: 100%;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            background-color: rgb(43, 194, 83);
+            background-image: linear-gradient( center bottom, rgb(43, 194, 83) 37%, rgb(84, 240, 84) 69% );
+            box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .meter > span:after,
+            .animate > span > span {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                background-image: linear-gradient( -45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent );
+                z-index: 1;
+                background-size: 50px 50px;
+                animation: move 2s linear infinite;
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
+                overflow: hidden;
+            }
+
+    .animate > span:after {
+        display: none;
+    }
+
+    .info_atendimento {
+        text-align: left;
+        margin-left: 5%;
+        margin-right: 5%;
+        letter-spacing: 1px;
+    }
+
+        .info_atendimento div {
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+    .btn_cancelar {
+    }
+
+    .line_spacing {
+        width: 40%;
+        border-bottom: 1px solid;
+        margin: 0 auto;
+        border-color: #899ac5;
+    }
+
+    /* 26 */
+
+    .id_26 {
+    }
+
+        .id_26 h1 {
+            color: #102c75;
+            margin: 3px;
+        }
+
+        .id_26 h2 {
+            color: #102c75;
+            margin: 2px;
+        }
+
+        .id_26 h3 {
+            color: #102c75;
+            margin: 2px;
+        }
+
+        .id_26 > .rodape {
+            width: 120%;
+            height: 80px;
+            background-color: yellow;
+            -ms-transform: skewY(-15deg); /* IE 9 */
+            transform: skewY(-15deg);
+        }
+
+        .id_26 .cabecalho {
+            margin: 0 auto;
+            width: 80%;
+            height: calc(0.15 * 100vw);
+            background-image: url('/demos/cabecalhos/26.png');
+            background-size: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: block;
+        }
+
+        .id_26 .fila_posicao {
+            margin: 0 auto;
+            width: 80%;
+            height: 35px;
+            background-image: linear-gradient(to right, rgb(55, 79, 141), rgb(39, 171, 196));
+            border-radius: 20px;
+        }
+
+            .id_26 .fila_posicao label {
+                font-size: 18px;
+                color: white;
+                line-height: 35px;
+            }
+
+        .id_26 .btn_cancelar {
+            width: 90%;
+            height: 40px;
+            font-size: 20px;
+            margin-top: 5px;
+            border-radius: 15px;
+            background-color: rgb(37, 182, 203) !important;
+            border-color: rgb(37, 182, 203) !important;
+        }
+
+        .id_26 .info_atendimento .panel {
+            border: solid 2px !important;
+            border-color: rgb(174, 190, 198) !important;
+            border-radius: 15px;
+        }
+
+        .id_26 .info_atendimento .panel-heading {
+            background-color: rgb(174, 190, 198) !important;
+            margin-top: -1px !important;
+            border-radius: 12px 12px 0 0;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+        }
+
+    /* END 26  */
+    /* 36 */
+
+    .id_36 {
+    }
+
+        .id_36 h1 {
+            color: #e94d14;
+            margin: 3px;
+        }
+
+        .id_36 h2 {
+            color: #e94d14;
+            margin: 2px;
+        }
+
+        .id_36 h3 {
+            color: #e94d14;
+            margin: 2px;
+        }
+
+        .id_36 > .rodape {
+            width: 120%;
+            height: 80px;
+            background-color: yellow;
+            -ms-transform: skewY(-15deg); /* IE 9 */
+            transform: skewY(-15deg);
+        }
+
+        .id_36 .cabecalho {
+            margin: 0 auto;
+            width: 80%;
+            height: calc(0.15 * 100vw);
+            background-image: url('/demos/cabecalhos/36.png');
+            background-size: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: block;
+        }
+
+        .id_36 .fila_posicao {
+            margin: 0 auto;
+            width: 80%;
+            height: 35px;
+            background-image: linear-gradient(to right, rgb(242, 146, 7), rgb(233, 77, 20));
+            border-radius: 20px;
+        }
+
+            .id_36 .fila_posicao label {
+                font-size: 18px;
+                color: white;
+                line-height: 35px;
+            }
+
+        .id_36 .btn_cancelar {
+            width: 90%;
+            height: 40px;
+            font-size: 20px;
+            margin-top: 5px;
+            border-radius: 15px;
+            background-color: rgb(242, 146, 7) !important;
+            border-color: rgb(242, 146, 7) !important;
+        }
+
+        .id_36 .info_atendimento .panel {
+            border: solid 2px !important;
+            border-color: rgb(174, 190, 198) !important;
+            border-radius: 15px;
+        }
+
+        .id_36 .info_atendimento .panel-heading {
+            background-color: rgb(174, 190, 198) !important;
+            margin-top: -1px !important;
+            border-radius: 12px 12px 0 0;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+        }
+
+    /* END 36  */
+    fieldset {
+        margin: 25px 0px 25px 0px;
+        padding: 0 10px 10px;
+        border: 1px solid #666;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #666;
+        padding-top: 10px;
+    }
+
+    legend {
+        padding: 2px 4px;
+        background: #fff;
+        /* For better legibility against the box-shadow */
+    }
+
+    fieldset > legend {
+        float: left;
+        margin-top: -20px;
+    }
+
+    @keyframes move {
+        0% {
+            background-position: 0 0;
+        }
+
+        100% {
+            background-position: 50px 50px;
+        }
+    }
+
+    .reload_btn {
+        letter-spacing: normal;
+        margin: 0;
+        box-sizing: border-box;
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 0;
+        margin-right: auto;
+        margin-left: auto;
+        height: 50px !important;
+        width: 50px !important;
+        cursor: pointer;
+        right: 30px !important;
+        bottom: 30px !important;
+        padding: 15px;
+        border: 0px;
+        border-radius: 24px;
+        position: fixed;
+        background-color: rgb(62, 149, 227);
+        zoom: 3;
+        z-index: 999999;
+        background-image: url('/demos/images/refresh.png');
+        background-size: 60%;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: block;
+    }
+</style>
