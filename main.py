@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 
 
 # test IRIS
-@app.get("/telemedicina/{user_id}")
-async def telemedicine(user_id: str):
+@app.get("/telemedicina/redirect/{user_id}")
+async def telemedicine_redirect(user_id: str):
     logger.info(f"Recebido request para o usuário {user_id}")
 
     adapter = IrisAdapter()
@@ -41,6 +41,19 @@ async def telemedicine(user_id: str):
 
     logger.info(f"Sucesso. Usuário" f"{user_id}." f"redirecionado para {url_redirect}")
 
-    # return {"url": url_redirect}
-
     return RedirectResponse(url=url_redirect)
+
+
+@app.post("/telemedicina/{user_id}")
+async def telemedicine_post(user_id: str):
+    logger.info(f"Recebido request para o usuário {user_id}")
+
+    adapter = IrisAdapter()
+    use_case = GetRedirectUrl(adapter)
+    controller = IntegrationController(use_case)
+
+    url_redirect = controller.get_redirect_url({"teste": "teste_url"})
+
+    logger.info(f"Sucesso. Usuário" f"{user_id}." f"redirecionado para {url_redirect}")
+
+    return {"url": url_redirect}
