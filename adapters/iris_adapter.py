@@ -1,5 +1,3 @@
-
-from domain.models import PatientData
 from interfaces.integration_interface import IntegrationInterface
 
 
