@@ -1,3 +1,4 @@
+from typing import Any
 
 import httpx
 
@@ -25,15 +26,17 @@ def get_or_default(nested_dict, nested_key, default_value):
     return current_dict
 
 
-def create_headers() -> str:
+def create_headers() -> dict[str, str]:
     return {"Authorization": TOKEN_TOLIFE}
 
 
-def create_payload(attendance_json: dict[str, any]) -> str:
+def create_payload(attendance_json: dict[str, Any]) -> dict[str, Any]:
     systolic = get_or_default(
-        attendance_json, "measurements.bloodPressure.value.systolic", 120)
+        attendance_json, "measurements.bloodPressure.value.systolic", 120
+    )
     diastolic = get_or_default(
-        attendance_json, "measurements.bloodPressure.value.diastolic", 80)
+        attendance_json, "measurements.bloodPressure.value.diastolic", 80
+    )
     payload = {
         "patientName": get_or_default(attendance_json, "patient.name", "teste teste"),
         "socialName": "",
@@ -46,7 +49,9 @@ def create_payload(attendance_json: dict[str, any]) -> str:
         "state": "",
         "phone": "",
         "email": "",
-        "temperature": get_or_default(attendance_json, "measurements.temperature.value", 36.5),
+        "temperature": get_or_default(
+            attendance_json, "measurements.temperature.value", 36.5
+        ),
         "respiratoryFrequency": get_or_default(
             attendance_json, "measurements.respirationRate.value", 15
         ),
@@ -61,11 +66,11 @@ def create_payload(attendance_json: dict[str, any]) -> str:
 
 class TolifeAdapter(IntegrationInterface):
 
-    async def get_redirect_url(self, patient_data: dict[str, any]) -> str:
+    async def get_redirect_url(self, patient_data: dict[str, Any]) -> str:
         response = await self.get_telemedicine_room(patient_data)
         return f"{URL_BASE_ROOM}/{response['hash']}"
 
-    async def get_telemedicine_room(self, attendance_dict: dict[str, any]):
+    async def get_telemedicine_room(self, attendance_dict: dict[str, Any]):
         async with httpx.AsyncClient() as client:
             headers = create_headers()
             payload = create_payload(attendance_dict)

@@ -1,9 +1,7 @@
-
 import pytest
 
 from adapters.iris_adapter import IrisAdapter
 from adapters.tolife_adapter import TolifeAdapter
-from controllers.integration_controller import IntegrationController
 from use_cases.get_redirect_url import GetRedirectUrl
 
 
@@ -25,15 +23,17 @@ def test_integ_iris():
         "heartRate": 72,
         "glucose": 100,
         "saturation": 97,
-        "bloodPressure": "130/85"
+        "bloodPressure": "130/85",
     }
     adapter = IrisAdapter()
     use_case = GetRedirectUrl(adapter)
-    controller = IntegrationController(use_case)
 
-    url = controller.get_redirect_url(patient_data)
+    url = use_case.execute(patient_data)
 
-    assert url == "https://videocalldoutorsalva.irisemergencia.com/VideoCall/VideoCall.html?MasterId=38&idChamada=ZDNjM2RkNGUtNTE1My00MTIyLTk0NDEtYjQ2MGI4ZDU4ODA2"
+    assert (
+        url
+        == "https://videocalldoutorsalva.irisemergencia.com/VideoCall/VideoCall.html?MasterId=38&idChamada=ZDNjM2RkNGUtNTE1My00MTIyLTk0NDEtYjQ2MGI4ZDU4ODA2"
+    )
 
 
 # @pytest.mark.asyncio
@@ -60,7 +60,6 @@ def test_integ_iris():
 #     adapter = TolifeAdapter()
 #     use_case = GetRedirectUrl(adapter)
 
-#     controller = IntegrationController(use_case)
 #     url = await controller.get_redirect_url(patient_data)
 #     print(url)
 
@@ -87,4 +86,4 @@ async def test_tolife_adapter():
 
     response = await adapter.get_telemedicine_room(patient_data)
 
-    assert response['isError'] is False
+    assert response["isError"] is False
