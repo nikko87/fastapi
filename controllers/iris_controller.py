@@ -3,7 +3,7 @@ import logging
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 
-from adapters.iris_adapter import IrisAdapter
+from infra.adapters.iris_adapter import IrisAdapter
 from use_cases.get_redirect_url import GetRedirectUrl
 
 router = APIRouter()

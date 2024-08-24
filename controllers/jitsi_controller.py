@@ -3,7 +3,7 @@ import logging
 import httpx
 from fastapi import APIRouter, HTTPException, Response
 
-from adapters.jitsi_adapter import JitsiAdapter
+from infra.adapters.jitsi_adapter import JitsiAdapter
 from use_cases.get_redirect_url import GetRedirectUrl
 
 router = APIRouter()
