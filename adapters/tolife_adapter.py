@@ -2,7 +2,6 @@ from typing import Any
 
 import httpx
 
-from domain.models import PatientData
 from interfaces.integration_interface import IntegrationInterface
 
 URL_TOLIFE = "https://api.clusterstaging.tolife.app/integration/api/v1/Telemedicine"
