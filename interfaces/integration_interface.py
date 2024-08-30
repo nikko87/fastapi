@@ -5,5 +5,5 @@ from typing import Any
 class IntegrationInterface(ABC):
 
     @abstractmethod
-    def get_redirect_url(self, patient_data: dict[str, Any]):
+    def get_redirect_url(self, patient_data: dict[str, Any]) -> str:
         pass
