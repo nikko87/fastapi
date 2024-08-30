@@ -4,8 +4,14 @@ from datetime import date, timedelta
 from typing import Any
 
 import httpx
-from tenacity import (after_log, retry, retry_if_result, stop_after_attempt,
-                      stop_after_delay, wait_fixed)
+from tenacity import (
+    after_log,
+    retry,
+    retry_if_result,
+    stop_after_attempt,
+    stop_after_delay,
+    wait_fixed,
+)
 
 VITAL_DOC_BASE_URL = "https://h-mj.vitaldoc.com.br/admin/v1/attendance"
 SPONSOR_ID = "1ce09866-c945-4f25-ba7a-f6bed5335b51"
@@ -16,9 +22,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def create_vitaldoc_api_url(attendance_date: str) -> str:
+def create_vitaldoc_api_url(attendance_date: date) -> str:
     return (
-        f"{VITAL_DOC_BASE_URL}/history?start={attendance_date}&sponsorId={SPONSOR_ID}"
+        f"{VITAL_DOC_BASE_URL}/history?start={attendance_date.isoformat()}&sponsorId={SPONSOR_ID}"
     )
 
 
@@ -26,12 +32,11 @@ def create_headers() -> dict[str, str]:
     return {"Authorization": "Bearer " + TOKEN}
 
 
-def calc_date_yesterday() -> str:
-    return (date.today() - timedelta(days=1)).isoformat()
+def calc_date_yesterday(date: date) -> date:
 
 
-def get_date_today() -> str:
-    return date.today().isoformat()
+def get_date_today() -> date:
+    return date.today()
 
 
 def attendances_not_found(value):
@@ -40,8 +45,9 @@ def attendances_not_found(value):
 
 class GetAttendanceDataVitalDocUseCase:
 
-    def execute(self, user_id: str) -> dict[str, Any]:
-        return {}
+    async def execute(self, user_id: str, date: date) -> dict[str, Any]:
+        attendance = await self.get_attendances_vitaldoc(date)
+        return attendance
 
     @retry(
         retry=retry_if_result(attendances_not_found),
@@ -49,25 +55,24 @@ class GetAttendanceDataVitalDocUseCase:
         stop=stop_after_attempt(6),
         after=after_log(logger, logging.INFO),
     )
-    async def get_attendances_vitaldoc(self):
-        data = get_date_today()
+    async def get_attendances_vitaldoc(self, date: date):
 
         async with httpx.AsyncClient() as client:
-            r_json = await self.send_request(client, data)
+            r_json = await self.send_request(client, date)
 
             if attendances_not_found(r_json):
                 logger.warning(
                     f"Não foram encontrados atendimentos para o dia"
-                    f" {data} . Tentando com data de ontem."
+                    f" {date.isoformat()} . Tentando com data de ontem."
                 )
 
-            r_json = await self.try_yesterday(client, data)
+            r_json = await self.try_yesterday(client, date)
 
             return r_json
 
-    async def try_yesterday(self, client: httpx.AsyncClient, data: str):
-        data = calc_date_yesterday()
-        return await self.send_request(client, data)
+    async def try_yesterday(self, client: httpx.AsyncClient, date: date):
+        yesterday =  date - timedelta(days=1)
+        return await self.send_request(client, yesterday)
 
     @staticmethod
     def find_attendance_in_json(attendances: dict, user_id: str) -> dict:
@@ -78,7 +83,7 @@ class GetAttendanceDataVitalDocUseCase:
         return {}
 
     @staticmethod
-    async def send_request(client: httpx.AsyncClient, attendance_date: str):
+    async def send_request(client: httpx.AsyncClient, attendance_date: date):
         url = create_vitaldoc_api_url(attendance_date)
         headers = create_headers()
 
@@ -86,10 +91,3 @@ class GetAttendanceDataVitalDocUseCase:
         return r.json()
 
 
-class GetAttendanceData:
-
-    async def execute(self, user_id: str) -> dict[str, Any]:
-        vitaldoc = GetAttendanceDataVitalDocUseCase()
-        attendance = await vitaldoc.get_attendances_vitaldoc()
-
-        return attendance
