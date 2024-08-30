@@ -32,9 +32,6 @@ def create_headers() -> dict[str, str]:
     return {"Authorization": "Bearer " + TOKEN}
 
 
-def calc_date_yesterday(date: date) -> date:
-
-
 def get_date_today() -> date:
     return date.today()
 
