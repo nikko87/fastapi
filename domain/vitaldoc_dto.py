@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -13,8 +12,10 @@ class MeasurementBaseModel(BaseModel):
     timestamp: str
     startTimestamp: str
 
+
 class Temperature(MeasurementBaseModel):
     value: int
+
 
 class Spo2(MeasurementBaseModel):
     value: int
@@ -147,12 +148,12 @@ class AttendedBy(BaseModel):
     displayName: str
 
 
-class Datum(BaseModel):
+class PatientDataVitaldocDTO(BaseModel):
     id: str
     attended: bool
     attendedAt: Optional[str]
     createdAt: str
-    measurements: Optional[Measurement]
+    measurements: Measurement
     questions: Optional[list[Question]]
     riskClassification: str
     locator: Optional[str]
@@ -169,6 +170,6 @@ class Datum(BaseModel):
     attendedBy: Optional[AttendedBy] = None
 
 
-class PatientDataVitaldocDTO(BaseModel):
-    data: list[Datum]
+class PatientDataResponseVitaldocDTO(BaseModel):
+    data: list[PatientDataVitaldocDTO]
     count: Optional[int] = None
